@@ -65,7 +65,7 @@
   (push (list from to flag) foldvis-outline--nodes))
 
 (defun foldvis-outline--show-heading ()
-  ""
+  "Modified from the function `outline-show-heading'."
   (foldvis-outline--flag-region (- (point)
                                    (if (bobp) 0
                                      (if (and outline-blank-line
@@ -75,7 +75,7 @@
                                 nil))
 
 (defun foldvis-outline--hide-sublevels (levels)
-  ""
+  "Modified from the function `outline-hide-sublevels'."
   (if (< levels 1)
       (error "Must keep at least one level of headers"))
   (save-excursion
@@ -118,7 +118,9 @@
   "Create indicators using NODE."
   (when-let* ((beg (nth 0 node))
               (end (nth 1 node)))
-    (let ((folded (not (nth 2 node))))
+    (let ((folded (save-excursion
+                    (goto-char beg)
+                    (outline-invisible-p (line-end-position)))))
       (foldvis--create-overlays beg end folded))))
 
 (defun foldvis-outline--within-window (node wend wstart)
@@ -148,7 +150,9 @@ Arguments WEND and WSTART are the range for caching."
                 (nodes-to-fold
                  (cl-remove-if-not (lambda (node)
                                      (foldvis-outline--within-window node wend wstart))
-                                   nodes-to-fold)))
+                                   nodes-to-fold))
+                (nodes-to-fold (cdr (reverse nodes-to-fold))))
+      (ic nodes-to-fold)
       (foldvis--remove-ovs)
       (thread-last nodes-to-fold
                    (mapc #'foldvis-outline--create)))
