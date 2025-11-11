@@ -24,13 +24,31 @@
 
 ;;; Code:
 
-(require 'ts-fold)
-
 (require 'foldvis)
 
 ;;
-;; (@* "Entry" )
+;;; Externals
+
+(declare-function tsc-query-captures "ext:tsc.el")
+(declare-function tsc-make-query "ext:tsc.el")
+(declare-function tsc-root-node "ext:tsc.el")
+(declare-function tsc-node-end-position "ext:tsc.el")
+(declare-function tsc-node-start-position "ext:tsc.el")
+
+(defvar tree-sitter-mode)
+(defvar tree-sitter-tree)
+(defvar tree-sitter-language)
+
+(defvar ts-fold-mode)
+(defvar ts-fold-range-alist)
+(declare-function ts-fold--non-foldable-node-p "ext:ts-fold.el")
+(declare-function ts-fold--ensure-ts "ext:ts-fold.el")
+(declare-function ts-fold-overlay-at "ext:ts-fold.el")
+(declare-function ts-fold--get-fold-range "ext:ts-fold.el")
+(declare-function ts-fold-toggle "ext:ts-fold.el")
+
 ;;
+;;; Entry
 
 ;;;###autoload
 (defun foldvis-ts-fold--enable ()
@@ -50,8 +68,7 @@
   (and (featurep 'ts-fold) ts-fold-mode))
 
 ;;
-;; (@* "Events" )
-;;
+;;; Events
 
 ;;;###autoload
 (defun foldvis-ts-fold--toggle ()
@@ -59,8 +76,7 @@
   (ts-fold-toggle))
 
 ;;
-;; (@* "Core" )
-;;
+;;; Core
 
 (defun foldvis-ts-fold--create (node)
   "Create indicators using NODE."

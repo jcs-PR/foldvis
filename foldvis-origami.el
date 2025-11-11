@@ -24,13 +24,21 @@
 
 ;;; Code:
 
-(require 'origami)
-
 (require 'foldvis)
 
 ;;
-;; (@* "Entry" )
+;;; Externals
+
+(defvar origami-mode)
+
+(declare-function origami-get-fold-tree "ext:origami.el")
+(declare-function origami-fold-open? "ext:origami.el")
+(declare-function origami-fold-end "ext:origami.el")
+(declare-function origami-fold-beg "ext:origami.el")
+(declare-function origami-toggle-node "ext:origami.el")
+
 ;;
+;;; Entry
 
 ;;;###autoload
 (defun foldvis-origami--valid ()
@@ -38,8 +46,7 @@
   (and (featurep 'origami) origami-mode))
 
 ;;
-;; (@* "Events" )
-;;
+;;; Events
 
 ;;;###autoload
 (defun foldvis-origami--toggle ()
@@ -47,8 +54,7 @@
   (call-interactively #'origami-toggle-node))
 
 ;;
-;; (@* "Core" )
-;;
+;;; Core
 
 (defun foldvis-origami--create (node)
   "Create indicators using NODE."

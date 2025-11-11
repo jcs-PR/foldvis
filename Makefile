@@ -15,7 +15,6 @@ install:
 
 compile:
 	@echo "Compiling..."
-	$(EASK) install-deps --dev
 	$(EASK) compile
 
 test:

@@ -24,13 +24,25 @@
 
 ;;; Code:
 
-(require 'treesit-fold)
-
 (require 'foldvis)
 
 ;;
-;; (@* "Entry" )
+;;; Externals
+
+(declare-function treesit-buffer-root-node "ext:treesit.el")
+(declare-function treesit-node-language "ext:treesit.el")
+
+(defvar treesit-fold-mode)
+(defvar treesit-fold-range-alist)
+(declare-function treesit-fold--ensure-ts "ext:treesit-fold.el")
+(declare-function treesit-fold--non-foldable-node-p "ext:treesit-fold.el"
+                  (node mode-ranges))
+(declare-function treesit-fold-overlay-at "ext:treesit-fold.el")
+(declare-function treesit-fold--get-fold-range "ext:treesit-fold.el")
+(declare-function treesit-fold-toggle "ext:treesit-fold.el")
+
 ;;
+;;; Entry
 
 ;;;###autoload
 (defun foldvis-treesit-fold--enable ()
@@ -48,8 +60,7 @@
   (and (featurep 'treesit-fold) treesit-fold-mode))
 
 ;;
-;; (@* "Events" )
-;;
+;;; Events
 
 ;;;###autoload
 (defun foldvis-treesit-fold--toggle ()
@@ -57,8 +68,7 @@
   (treesit-fold-toggle))
 
 ;;
-;; (@* "Core" )
-;;
+;;; Core
 
 (defun foldvis-treesit-fold--create (node)
   "Create indicators using NODE."
