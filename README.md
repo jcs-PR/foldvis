@@ -6,9 +6,9 @@
 
 [![CI](https://github.com/emacs-vs/foldvis/actions/workflows/test.yml/badge.svg)](https://github.com/emacs-vs/foldvis/actions/workflows/test.yml)
 
-Supporting backends:
+A list of supported backends:
 
-- [hideshow][]
+- [hideshow][] (WIP)
 - [origami.el][]
 - [ts-fold][] / [treesit-fold][]
 

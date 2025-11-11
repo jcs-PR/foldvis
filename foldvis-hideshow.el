@@ -67,27 +67,7 @@
   "Refresh indicators for all folding range."
   (when hs-minor-mode
     (goto-char (point-min))
-    (while (search-forward-regexp hs-block-start-regexp nil t)
-      (when (if hideshowvis-ignore-same-line
-                (let ((begin-line (save-excursion
-                                    (goto-char (match-beginning 0))
-                                    (line-number-at-pos (point)))))
-                  (save-excursion
-                    (goto-char (match-beginning 0))
-                    (ignore-errors
-                      (progn
-                        (funcall hs-forward-sexp-func 1)
-                        (> (line-number-at-pos (point)) begin-line)))))
-              t)
-        (let* ((ovl (make-overlay (match-beginning 0) (match-end 0))))
-          (overlay-put ovl 'before-string
-                       (propertize
-                        "*hideshowvis*"
-                        'display
-                        (list 'left-fringe
-                              'hideshowvis-hideable-marker
-                              'hideshowvis-hidable-face)))
-          (overlay-put ovl 'hideshowvis-hs t))))
+    ;; TODO: ..
     (run-hooks 'foldvis-refresh-hook)))
 
 (provide 'foldvis-hideshow)
