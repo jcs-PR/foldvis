@@ -34,14 +34,14 @@
 ;;;###autoload
 (defun foldvis-hideshow--enable ()
   "Enable the folding minor mode."
-  (add-hook 'hs-show-hook #'foldvis-hideshow--refresh nil t)
-  (add-hook 'hs-hide-hook #'foldvis-hideshow--refresh nil t))
+  (add-hook 'hs-show-hook #'foldvis-refresh nil t)
+  (add-hook 'hs-hide-hook #'foldvis-refresh nil t))
 
 ;;;###autoload
 (defun foldvis-hideshow--disable ()
   "Disable the folding minor mode."
-  (remove-hook 'hs-show-hook #'foldvis-hideshow--refresh t)
-  (remove-hook 'hs-hide-hook #'foldvis-hideshow--refresh t))
+  (remove-hook 'hs-show-hook #'foldvis-refresh t)
+  (remove-hook 'hs-hide-hook #'foldvis-refresh t))
 
 ;;;###autoload
 (defun foldvis-hideshow--valid-p ()

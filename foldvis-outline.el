@@ -34,12 +34,12 @@
 ;;;###autoload
 (defun foldvis-outline--enable ()
   "Enable the folding minor mode."
-  (add-hook 'outline-view-change-hook #'foldvis-hideshow--refresh nil t))
+  (add-hook 'outline-view-change-hook #'foldvis-refresh nil t))
 
 ;;;###autoload
 (defun foldvis-outline--disable ()
   "Disable the folding minor mode."
-  (remove-hook 'outline-view-change-hook #'foldvis-hideshow--refresh t))
+  (remove-hook 'outline-view-change-hook #'foldvis-refresh t))
 
 ;;;###autoload
 (defun foldvis-outline--valid-p ()
@@ -64,52 +64,25 @@
   "To override the function `outline-flag-region'."
   (push (list from to flag) foldvis-outline--nodes))
 
-(defun foldvis-outline--show-heading ()
-  "Modified from the function `outline-show-heading'."
-  (foldvis-outline--flag-region (- (point)
-                                   (if (bobp) 0
-                                     (if (and outline-blank-line
-                                              (eq (char-before (1- (point))) ?\n))
-                                         2 1)))
-                                (progn (outline-end-of-heading) (point))
-                                nil))
-
-(defun foldvis-outline--hide-sublevels (levels)
-  "Modified from the function `outline-hide-sublevels'."
-  (if (< levels 1)
-      (error "Must keep at least one level of headers"))
+(defun foldvis-outline--flag-subtree (flag)
+  "Modified from the function `outline-flag-subtree'."
   (save-excursion
-    (let* (outline-view-change-hook
-           (beg (progn
-                  (goto-char (point-min))
-                  ;; Skip the prelude, if any.
-                  (unless (outline-on-heading-p t) (outline-next-heading))
-                  (point)))
-           (end (progn
-                  (goto-char (point-max))
-                  ;; Keep empty last line, if available.
-                  (if (bolp) (1- (point)) (point)))))
-      (if (< end beg)
-          (setq beg (prog1 end (setq end beg))))
-      ;; First hide everything.
-      (foldvis-outline--flag-region beg end t)
-      ;; Then unhide the top level headers.
-      (outline-map-region
-       (lambda ()
-         (if (<= (funcall outline-level) levels)
-             (foldvis-outline--show-heading)))
-       beg end)
-      ;; Finally unhide any trailing newline.
-      (goto-char (point-max))
-      (if (and (bolp) (not (bobp)) (outline-invisible-p (1- (point))))
-          (foldvis-outline--flag-region (1- (point)) (point) nil)))))
+    (outline-back-to-heading)
+    (outline-end-of-heading)
+    (foldvis-outline--flag-region (point)
+                                  (progn (outline-end-of-subtree) (point))
+                                  flag)))
 
 (defun foldvis-outline--nodes ()
   "Return a list of foldable nodes."
-  (let (outline-view-change-hook
-        foldvis-outline--nodes)
-    (ignore-errors (foldvis-outline--hide-sublevels 1))
-    foldvis-outline--nodes))
+  (save-excursion
+    (let (outline-view-change-hook
+          foldvis-outline--nodes)
+      (goto-char (point-min))
+      (while (not (eobp))
+        (ignore-errors (foldvis-outline--flag-subtree t))
+        (forward-line 1))
+      (delete-dups foldvis-outline--nodes))))
 
 ;;
 ;;; Core
@@ -150,9 +123,7 @@ Arguments WEND and WSTART are the range for caching."
                 (nodes-to-fold
                  (cl-remove-if-not (lambda (node)
                                      (foldvis-outline--within-window node wend wstart))
-                                   nodes-to-fold))
-                (nodes-to-fold (cdr (reverse nodes-to-fold))))
-      (ic nodes-to-fold)
+                                   nodes-to-fold)))
       (foldvis--remove-ovs)
       (thread-last nodes-to-fold
                    (mapc #'foldvis-outline--create)))
