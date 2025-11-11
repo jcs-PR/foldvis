@@ -181,6 +181,13 @@ See macro `with-selected-window' description for arguments WINDOW and BODY."
     (unless backend
       (foldvis--remove-ovs-buffer))))
 
+(defvar foldvis-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map [left-fringe mouse-1] #'foldvis-click-fringe)
+    (define-key map [right-fringe mouse-1] #'foldvis-click-fringe)
+    map)
+  "The keymap for function `foldvis-mode'.")
+
 (defun foldvis--enable ()
   "Start folding minor mode."
   (foldvis--call-backend "-enable")
@@ -204,6 +211,7 @@ See macro `with-selected-window' description for arguments WINDOW and BODY."
   "Display indicators for various folding systems."
   :group 'foldvis
   :init-value nil
+  :keymap foldvis-mode-map
   :lighter " FoldVis"
   (if foldvis-mode (foldvis--enable) (foldvis--disable)))
 
@@ -224,13 +232,6 @@ See macro `with-selected-window' description for arguments WINDOW and BODY."
 (defun foldvis-toggle ()
   "Call internal toggle function."
   (foldvis--call-backend "-toggle"))
-
-(defvar foldvis-mode-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map [left-fringe mouse-1] #'foldvis-click-fringe)
-    (define-key map [right-fringe mouse-1] #'foldvis-click-fringe)
-    map)
-  "The keymap for function `foldvis-mode'.")
 
 (defun foldvis-click-fringe (event)
   "Handle the EVENT click on fringe."
