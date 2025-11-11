@@ -54,13 +54,13 @@
 (defun foldvis-ts-fold--enable ()
   "Enable the folding minor mode."
   (add-hook 'tree-sitter-after-change-functions #'foldvis--trigger-render nil t)
-  (advice-add 'ts-fold--after-command :after #'foldvis--trigger-render))
+  (advice-add 'ts-fold--after-command :after #'foldvis-refresh))
 
 ;;;###autoload
 (defun foldvis-ts-fold--disable ()
   "Disable the folding minor mode."
   (remove-hook 'tree-sitter-after-change-functions #'foldvis--trigger-render t)
-  (advice-remove 'ts-fold--after-command #'foldvis--trigger-render))
+  (advice-remove 'ts-fold--after-command #'foldvis-refresh))
 
 ;;;###autoload
 (defun foldvis-ts-fold--valid-p ()
