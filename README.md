@@ -2,7 +2,7 @@
 [![JCS-ELPA](https://raw.githubusercontent.com/jcs-emacs/badges/master/elpa/v/foldvis.svg)](https://jcs-emacs.github.io/jcs-elpa/#/foldvis)
 
 # foldvis
-> Display indicators for various folding systems
+> Display indicators for various folding systems.
 
 [![CI](https://github.com/emacs-vs/foldvis/actions/workflows/test.yml/badge.svg)](https://github.com/emacs-vs/foldvis/actions/workflows/test.yml)
 
