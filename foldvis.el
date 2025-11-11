@@ -70,6 +70,11 @@
                  (const :tag "Inaccurate rendering but fast" partial))
   :group 'foldvis)
 
+(defcustom foldvis-commands '( foldvis-click-fringe)
+  "A list of commands to refresh render."
+  :type '(list symbol)
+  :group 'foldvis)
+
 (defcustom foldvis-refresh-hook nil
   "Hook run after indicators refresh."
   :type 'hook
@@ -382,7 +387,8 @@ Argument FOLDED holds folding state; it's a boolean."
 (defun foldvis--post-command ()
   "Post command."
   (foldvis--choose-backend)
-  (when foldvis--render-this-command-p
+  (when (or foldvis--render-this-command-p
+            (memq this-command foldvis-commands))
     (foldvis-refresh)
     (setq foldvis--render-this-command-p nil)))
 
@@ -397,7 +403,7 @@ Argument FOLDED holds folding state; it's a boolean."
     (foldvis--remove-ovs window)))
 
 ;;;###autoload
-(defun foldvis-refresh ()
+(defun foldvis-refresh (&rest _)
   "The refresh event."
   (when foldvis-mode
     (foldvis--call-backend "-refresh")))
