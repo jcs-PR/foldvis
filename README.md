@@ -8,7 +8,7 @@
 
 A list of supported backends:
 
-- [hideshow][] (WIP)
+- [hideshow][]
 - [origami.el][]
 - [ts-fold][] / [treesit-fold][]
 
